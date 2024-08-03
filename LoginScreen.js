@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from './firebase';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -8,10 +9,9 @@ const LoginScreen = ({ navigation }) => {
   const [error, setError] = useState('');
 
   const handleLogin = async () => {
-    const auth = getAuth();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // Navigate to the main screen
+      // Navigate to the home screen
       navigation.navigate('Home');
     } catch (error) {
       setError(error.message);

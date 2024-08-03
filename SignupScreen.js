@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { getDatabase, ref, set } from 'firebase/database';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { ref, set } from 'firebase/database';
+import { auth, database } from './firebase';
 
 const SignupScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -9,14 +10,12 @@ const SignupScreen = ({ navigation }) => {
   const [error, setError] = useState('');
 
   const handleSignup = async () => {
-    const auth = getAuth();
-    const db = getDatabase();
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
       // Store user data in the Realtime Database
-      await set(ref(db, 'users/' + user.uid), {
+      await set(ref(database, 'users/' + user.uid), {
         email: user.email,
         uid: user.uid,
       });

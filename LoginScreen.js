@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
+import { TextInput, Button, useTheme } from 'react-native-paper'; // Using React Native Paper for enhanced UI
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from './firebase';
+import { LinearGradient } from 'expo-linear-gradient'; // For background gradient
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const theme = useTheme();
 
   const handleLogin = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // Navigate to the home screen
       navigation.navigate('Home');
     } catch (error) {
       setError(error.message);
@@ -19,52 +21,77 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      {error ? <Text style={styles.error}>{error}</Text> : null}
-      <Button title="Login" onPress={handleLogin} />
-      <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-        <Text style={styles.signupText}>Don't have an account? Sign up</Text>
-      </TouchableOpacity>
-    </View>
+    <LinearGradient colors={['#6a11cb', '#2575fc']} style={styles.background}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Welcome Back!</Text>
+
+        <TextInput
+          label="Email"
+          mode="outlined"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          style={styles.input}
+        />
+        <TextInput
+          label="Password"
+          mode="outlined"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          style={styles.input}
+        />
+
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+
+        <Button mode="contained" onPress={handleLogin} style={styles.button}>
+          Login
+        </Button>
+
+        <Button mode="text" onPress={() => navigation.navigate('Signup')} style={styles.signupButton}>
+          Don't have an account? Sign up
+        </Button>
+      </View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  container: {
+    width: '80%',
+    padding: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 10,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#333',
   },
   input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 8,
+    marginBottom: 20,
+    backgroundColor: 'white',
   },
   error: {
     color: 'red',
-    marginBottom: 12,
-  },
-  signupText: {
-    color: 'blue',
-    marginTop: 20,
     textAlign: 'center',
+    marginBottom: 10,
+  },
+  button: {
+    marginTop: 10,
+    backgroundColor: '#2575fc',
+  },
+  signupButton: {
+    marginTop: 20,
+    alignSelf: 'center',
   },
 });
 
